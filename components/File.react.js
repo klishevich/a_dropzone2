@@ -36,10 +36,10 @@ var File = React.createClass({
         return (
         <tr className={rowClassName} id={idName}>
             <td><a href="#" className="btn btn-danger size-small" >Удалить</a></td>
-            {this.cellViewText("IdItemType")}
+            {this.cellViewText("ItemType_Name")}
             {this.cellViewText("FileName")}
             {this.cellViewText("ContentSize")}
-            {this.cellViewText("IdUser")}
+            {this.cellViewText("User_Name")}
             {this.cellViewDate("UploadDate")}
             {this.cellViewText("Comment")}
         </tr>);

@@ -20663,14 +20663,14 @@
 	          key: item.IdFile,
 	          IdFile: item.IdFile,
 	          IdObject: item.IdObject,
-	          IdItemType: item.IdItemType,
+	          ItemType_Name: item.ItemType_Name,
 	          FileName: item.FileName,
 	          Extension: item.Extension,
 	          UploadDate: item.UploadDate,
 	          ContentSizeInBytes: item.ContentSizeInBytes,
 	          ContentSize: item.ContentSize,
 	          ArchiveUrl: item.ArchiveUrl,
-	          IdUser: item.IdUser,
+	          User_Name: item.User_Name,
 	          Deleted: item.Deleted,
 	          Comment: item.Comment,
 	          DocumentType: item.DocumentType });
@@ -20683,7 +20683,7 @@
 	    //Заголовки колонок таблицы
 	    return React.createElement(
 	      'div',
-	      { 'class': 'view-content-container filesList' },
+	      { className: 'view-content-container filesList' },
 	      React.createElement(
 	        'h3',
 	        null,
@@ -20812,10 +20812,10 @@
 	                    "Удалить"
 	                )
 	            ),
-	            this.cellViewText("IdItemType"),
+	            this.cellViewText("ItemType_Name"),
 	            this.cellViewText("FileName"),
 	            this.cellViewText("ContentSize"),
-	            this.cellViewText("IdUser"),
+	            this.cellViewText("User_Name"),
 	            this.cellViewDate("UploadDate"),
 	            this.cellViewText("Comment")
 	        );

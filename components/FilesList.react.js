@@ -21,14 +21,14 @@ var FilesList = React.createClass({
                       key={item.IdFile}
                       IdFile={item.IdFile}
                       IdObject={item.IdObject}
-                      IdItemType={item.IdItemType}
+                      ItemType_Name={item.ItemType_Name}
                       FileName={item.FileName}
                       Extension={item.Extension}
                       UploadDate={item.UploadDate}
                       ContentSizeInBytes={item.ContentSizeInBytes}
                       ContentSize={item.ContentSize}
                       ArchiveUrl={item.ArchiveUrl}
-                      IdUser={item.IdUser}
+                      User_Name={item.User_Name}
                       Deleted={item.Deleted}
                       Comment={item.Comment}
                       DocumentType={item.DocumentType}>
@@ -42,7 +42,7 @@ var FilesList = React.createClass({
         //edit
         //Заголовки колонок таблицы
         return (
-            <div class="view-content-container filesList">
+            <div className="view-content-container filesList">
               <h3>Список файлов</h3>
               <table className={listName}>
                   <thead className="tableHeader">

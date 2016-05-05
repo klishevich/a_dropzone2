@@ -86,7 +86,7 @@ var FilesUpload = React.createClass({
     },
     render: function() {
         return (
-            <div className="filesUpload">
+            <div className="view-content-container filesUpload">
                 <h3>Загрузка файлов</h3>
                 {this.renderError()}
                 <div className="row">

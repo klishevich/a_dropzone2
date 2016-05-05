@@ -35,13 +35,13 @@ var File = React.createClass({
         var idName = Constants.ClassName + this.props[Constants.IdName];
         return (
         <tr className={rowClassName} id={idName}>
+            <td><a href="#" className="btn btn-danger size-small" >Удалить</a></td>
             {this.cellViewText("IdItemType")}
             {this.cellViewText("FileName")}
             {this.cellViewText("ContentSize")}
             {this.cellViewText("IdUser")}
-            {this.cellViewText("UploadDate")}
+            {this.cellViewDate("UploadDate")}
             {this.cellViewText("Comment")}
-            <td>тут будут кнопки</td>
         </tr>);
     },
     rowView: function() {

@@ -42,36 +42,39 @@ var FilesList = React.createClass({
         //edit
         //Заголовки колонок таблицы
         return (
-          <table className={listName}>
-              <thead className="tableHeader">
-                <tr>
-                    <th className="th-default">
-                      {this.tableHeaderTitle("Тип файла")}
-                    </th>
-                    <th className="th-default">
-                      {this.tableHeaderTitle("Имя файла")}
-                    </th>
-                    <th className="th-default">
-                      {this.tableHeaderTitle("Размер")}
-                    </th>
-                    <th className="th-default">
-                      {this.tableHeaderTitle("Создатель")}
-                    </th>
-                    <th className="th-default">
-                      {this.tableHeaderTitle("Дата созания")}
-                    </th>
-                    <th className="th-default">
-                      {this.tableHeaderTitle("Комментарий")}
-                    </th>
-                    <th className="th-default">
-                      {this.tableHeaderTitle("Действия")}
-                    </th>
-                </tr>
-              </thead>
-            <tbody>
-                {listNodes}
-            </tbody>
-          </table>
+            <div class="view-content-container filesList">
+              <h3>Список файлов</h3>
+              <table className={listName}>
+                  <thead className="tableHeader">
+                    <tr>
+                        <th className="th-default">
+                          {this.tableHeaderTitle("Действия")}
+                        </th>
+                        <th className="th-default">
+                          {this.tableHeaderTitle("Тип файла")}
+                        </th>
+                        <th className="th-default">
+                          {this.tableHeaderTitle("Имя файла")}
+                        </th>
+                        <th className="th-default">
+                          {this.tableHeaderTitle("Размер")}
+                        </th>
+                        <th className="th-default">
+                          {this.tableHeaderTitle("Создатель")}
+                        </th>
+                        <th className="th-default">
+                          {this.tableHeaderTitle("Дата созания")}
+                        </th>
+                        <th className="th-max">
+                          {this.tableHeaderTitle("Комментарий")}
+                        </th>
+                    </tr>
+                  </thead>
+                <tbody>
+                    {listNodes}
+                </tbody>
+              </table>
+            </div>
       );
     }
 });

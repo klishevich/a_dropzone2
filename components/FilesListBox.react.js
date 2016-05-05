@@ -28,14 +28,13 @@ var FilesListBox = React.createClass({
     },
     render: function() {
         return (
-            <div className="view-content-container FilesListBox">
+            <div className="filesListBox">
             	<FilesUpload 
             	    dropdownurl={this.props.dropdownurl}
             	    category={this.props.category}
             	    idname={this.props.idname}
             	    idobject={this.props.idobject}
             	    onUpdate={this.loadFromServer}/>
-                <h3>Список файлов</h3>
                 <FilesList data={this.state.data}/>
         	</div>
       );

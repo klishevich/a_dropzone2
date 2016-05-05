@@ -19750,18 +19750,13 @@
 	    render: function render() {
 	        return React.createElement(
 	            'div',
-	            { className: 'view-content-container FilesListBox' },
+	            { className: 'filesListBox' },
 	            React.createElement(FilesUpload, {
 	                dropdownurl: this.props.dropdownurl,
 	                category: this.props.category,
 	                idname: this.props.idname,
 	                idobject: this.props.idobject,
 	                onUpdate: this.loadFromServer }),
-	            React.createElement(
-	                'h3',
-	                null,
-	                'Список файлов'
-	            ),
 	            React.createElement(FilesList, { data: this.state.data })
 	        );
 	    }
@@ -20491,7 +20486,7 @@
 	    render: function render() {
 	        return React.createElement(
 	            'div',
-	            { className: 'filesUpload' },
+	            { className: 'view-content-container filesUpload' },
 	            React.createElement(
 	                'h3',
 	                null,
@@ -20687,55 +20682,64 @@
 	    //edit
 	    //Заголовки колонок таблицы
 	    return React.createElement(
-	      'table',
-	      { className: listName },
+	      'div',
+	      { 'class': 'view-content-container filesList' },
 	      React.createElement(
-	        'thead',
-	        { className: 'tableHeader' },
-	        React.createElement(
-	          'tr',
-	          null,
-	          React.createElement(
-	            'th',
-	            { className: 'th-default' },
-	            this.tableHeaderTitle("Тип файла")
-	          ),
-	          React.createElement(
-	            'th',
-	            { className: 'th-default' },
-	            this.tableHeaderTitle("Имя файла")
-	          ),
-	          React.createElement(
-	            'th',
-	            { className: 'th-default' },
-	            this.tableHeaderTitle("Размер")
-	          ),
-	          React.createElement(
-	            'th',
-	            { className: 'th-default' },
-	            this.tableHeaderTitle("Создатель")
-	          ),
-	          React.createElement(
-	            'th',
-	            { className: 'th-default' },
-	            this.tableHeaderTitle("Дата созания")
-	          ),
-	          React.createElement(
-	            'th',
-	            { className: 'th-default' },
-	            this.tableHeaderTitle("Комментарий")
-	          ),
-	          React.createElement(
-	            'th',
-	            { className: 'th-default' },
-	            this.tableHeaderTitle("Действия")
-	          )
-	        )
+	        'h3',
+	        null,
+	        'Список файлов'
 	      ),
 	      React.createElement(
-	        'tbody',
-	        null,
-	        listNodes
+	        'table',
+	        { className: listName },
+	        React.createElement(
+	          'thead',
+	          { className: 'tableHeader' },
+	          React.createElement(
+	            'tr',
+	            null,
+	            React.createElement(
+	              'th',
+	              { className: 'th-default' },
+	              this.tableHeaderTitle("Действия")
+	            ),
+	            React.createElement(
+	              'th',
+	              { className: 'th-default' },
+	              this.tableHeaderTitle("Тип файла")
+	            ),
+	            React.createElement(
+	              'th',
+	              { className: 'th-default' },
+	              this.tableHeaderTitle("Имя файла")
+	            ),
+	            React.createElement(
+	              'th',
+	              { className: 'th-default' },
+	              this.tableHeaderTitle("Размер")
+	            ),
+	            React.createElement(
+	              'th',
+	              { className: 'th-default' },
+	              this.tableHeaderTitle("Создатель")
+	            ),
+	            React.createElement(
+	              'th',
+	              { className: 'th-default' },
+	              this.tableHeaderTitle("Дата созания")
+	            ),
+	            React.createElement(
+	              'th',
+	              { className: 'th-max' },
+	              this.tableHeaderTitle("Комментарий")
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'tbody',
+	          null,
+	          listNodes
+	        )
 	      )
 	    );
 	  }
@@ -20799,17 +20803,21 @@
 	        return React.createElement(
 	            "tr",
 	            { className: rowClassName, id: idName },
+	            React.createElement(
+	                "td",
+	                null,
+	                React.createElement(
+	                    "a",
+	                    { href: "#", className: "btn btn-danger size-small" },
+	                    "Удалить"
+	                )
+	            ),
 	            this.cellViewText("IdItemType"),
 	            this.cellViewText("FileName"),
 	            this.cellViewText("ContentSize"),
 	            this.cellViewText("IdUser"),
-	            this.cellViewText("UploadDate"),
-	            this.cellViewText("Comment"),
-	            React.createElement(
-	                "td",
-	                null,
-	                "тут будут кнопки"
-	            )
+	            this.cellViewDate("UploadDate"),
+	            this.cellViewText("Comment")
 	        );
 	    },
 	    rowView: function rowView() {

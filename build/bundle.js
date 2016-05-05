@@ -54,7 +54,7 @@
 	    dropdownurl: document.getElementById('filesUpload').getAttribute("dropdownurl"),
 	    category: document.getElementById('filesUpload').getAttribute("category"),
 	    idname: document.getElementById('filesUpload').getAttribute("idname"),
-	    idobject: $('#idObject').val() }), document.getElementById('filesUpload'));
+	    idobject: $('#IdCourtCase').val() }), document.getElementById('filesUpload'));
 
 /***/ },
 /* 1 */

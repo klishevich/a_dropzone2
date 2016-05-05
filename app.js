@@ -7,6 +7,6 @@ ReactDOM.render(
     dropdownurl={document.getElementById('filesUpload').getAttribute("dropdownurl")}
     category={document.getElementById('filesUpload').getAttribute("category")}
     idname={document.getElementById('filesUpload').getAttribute("idname")}
-    idobject={$('#idObject').val()}/>, 
+    idobject={$('#IdCourtCase').val()}/>, 
     document.getElementById('filesUpload')
 );

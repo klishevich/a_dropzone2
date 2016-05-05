@@ -1,8 +1,48 @@
 var React = require('react');
-var CommonSelect = require('./CommonSelect.react');
 var Dropzone = require('react-dropzone');
+var FilesUpload = require('./FilesUpload.react');
 
-var FilesUpload = React.createClass({
+var FilesListBox = React.createClass({
+    getInitialState: function() {
+        this.loadFromServer();
+        return {data: []};
+    },
+    loadFromServer: function() {
+        $.ajax({
+            url: '/CourtCase/FilesList/' + this.props.IdObject,
+            dataType: 'json',
+            cache: false,
+            success: function(data) {
+                if (this.isMounted()) {
+                    this.setState({data: data});
+                }
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error("/", status, err.toString());
+            }.bind(this)
+        });
+    },
+    // Select Lists
+    render: function() {
+        return (
+	<FilesUpload 
+	    dropdownurl={this.props.dropdownurl}
+	    category={this.props.category}
+	    idname={this.props.idname}
+	    idobject={this.props.idobject}/>
+        <div className="view-content-container FilesList">
+            <h3>Список файлов</h3>
+            <CCSideList 
+              data={this.state.data}
+              onDelete={this.handleDelete}
+              onSave={this.handleSave}
+              onAdd={this.handleAdd}
+              readOnly={this.props.readOnly} 
+              IdCourtCase={this.props.IdCourtCase}
+              sideTypeSelect={this.state.sideTypeSelect} />
+          </div>
+      );
+    }
     getInitialState: function() {
         return {fileTypeSelect: [], IdValue: '', Comment: '', Error: null };
     },
@@ -52,9 +92,6 @@ var FilesUpload = React.createClass({
                 if (data.error == true){
                     this.setState({Error: data.errorMessage});
                 }
-		else {
-		    this.props.onUpdate();
-		}
                 // this.setState({data: data});
                 // focusAndBlinkOnElement(item, '#'+Constants.ClassName, 'IdCourtCaseSession', false);
             }.bind(this),
@@ -118,4 +155,5 @@ var FilesUpload = React.createClass({
     }
 });
 
-module.exports = FilesUpload;
+
+module.exports = FilesListBox;

@@ -4,7 +4,7 @@ var Dropzone = require('react-dropzone');
 
 var FilesUpload = React.createClass({
     getInitialState: function() {
-        return {fileTypeSelect: [], IdValue: '', Comment: '', Error: null};
+        return {fileTypeSelect: [], IdValue: '', Comment: '', Error: null };
     },
     componentWillMount: function() {
         this.loadSelectFileType('?category=' + this.props.category);

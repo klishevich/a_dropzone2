@@ -49,12 +49,13 @@
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(158);
 	var FilesUpload = __webpack_require__(159);
+	var idobjectname = '#' + document.getElementById('filesUpload').getAttribute("idobjectname");
 
 	ReactDOM.render(React.createElement(FilesUpload, {
 	    dropdownurl: document.getElementById('filesUpload').getAttribute("dropdownurl"),
 	    category: document.getElementById('filesUpload').getAttribute("category"),
 	    idname: document.getElementById('filesUpload').getAttribute("idname"),
-	    idobject: $('#IdCourtCase').val() }), document.getElementById('filesUpload'));
+	    idobject: $(idobjectname).val() }), document.getElementById('filesUpload'));
 
 /***/ },
 /* 1 */

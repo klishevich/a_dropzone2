@@ -32,6 +32,7 @@ var FilesUpload = React.createClass({
         var postdata = new FormData();
         postdata.append('IdValue', this.state.IdValue);
         postdata.append('Comment', this.state.Comment);
+        postdata.append('IdObject', this.props.idobject);
         files.forEach(function(file) {
             postdata.append(file.name, file);
             // file['IdFileType'] = IdFileType;

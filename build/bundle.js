@@ -51,9 +51,10 @@
 	var FilesUpload = __webpack_require__(159);
 
 	ReactDOM.render(React.createElement(FilesUpload, {
-		dropdownurl: document.getElementById('filesUpload').getAttribute("dropdownurl"),
-		category: document.getElementById('filesUpload').getAttribute("category"),
-		idname: document.getElementById('filesUpload').getAttribute("idname") }), document.getElementById('filesUpload'));
+	    dropdownurl: document.getElementById('filesUpload').getAttribute("dropdownurl"),
+	    category: document.getElementById('filesUpload').getAttribute("category"),
+	    idname: document.getElementById('filesUpload').getAttribute("idname"),
+	    idobject: $('#idObject').val() }), document.getElementById('filesUpload'));
 
 /***/ },
 /* 1 */
@@ -7980,6 +7981,10 @@
 	  }
 	};
 
+	function registerNullComponentID() {
+	  ReactEmptyComponentRegistry.registerNullComponentID(this._rootNodeID);
+	}
+
 	var ReactEmptyComponent = function ReactEmptyComponent(instantiate) {
 	  this._currentElement = null;
 	  this._rootNodeID = null;
@@ -7988,7 +7993,7 @@
 	assign(ReactEmptyComponent.prototype, {
 	  construct: function construct(element) {},
 	  mountComponent: function mountComponent(rootID, transaction, context) {
-	    ReactEmptyComponentRegistry.registerNullComponentID(rootID);
+	    transaction.getReactMountReady().enqueue(registerNullComponentID, this);
 	    this._rootNodeID = rootID;
 	    return ReactReconciler.mountComponent(this._renderedComponent, rootID, transaction, context);
 	  },
@@ -18737,7 +18742,7 @@
 
 	'use strict';
 
-	module.exports = '0.14.7';
+	module.exports = '0.14.8';
 
 /***/ },
 /* 147 */
@@ -19751,6 +19756,7 @@
 	        var postdata = new FormData();
 	        postdata.append('IdValue', this.state.IdValue);
 	        postdata.append('Comment', this.state.Comment);
+	        postdata.append('IdObject', this.props.idobject);
 	        files.forEach(function (file) {
 	            postdata.append(file.name, file);
 	            // file['IdFileType'] = IdFileType;

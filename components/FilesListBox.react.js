@@ -1,6 +1,7 @@
 var React = require('react');
 var Dropzone = require('react-dropzone');
 var FilesUpload = require('./FilesUpload.react');
+var FilesList = require('./FilesList.react');
 
 var FilesListBox = React.createClass({
     getInitialState: function() {
@@ -11,11 +12,12 @@ var FilesListBox = React.createClass({
     },
     loadFromServer: function() {
         $.ajax({
-            url: '/CourtCase/FilesList/' + this.props.IdObject,
+            url: '/CourtCase/FilesList/' + this.props.idobject,
             dataType: 'json',
             cache: false,
             success: function(data) {
                 if (this.isMounted()) {
+                    console.log('files data', data);
                     this.setState({data: data});
                 }
             }.bind(this),
@@ -26,16 +28,16 @@ var FilesListBox = React.createClass({
     },
     render: function() {
         return (
-	<FilesUpload 
-	    dropdownurl={this.props.dropdownurl}
-	    category={this.props.category}
-	    idname={this.props.idname}
-	    idobject={this.props.idobject}
-	    onUpdate={this.loadFromServer}/>
-        <div className="view-content-container FilesList">
-            <h3>Список файлов</h3>
-            <FilesList data={this.state.data}/>
-	</div>
+            <div className="view-content-container FilesListBox">
+            	<FilesUpload 
+            	    dropdownurl={this.props.dropdownurl}
+            	    category={this.props.category}
+            	    idname={this.props.idname}
+            	    idobject={this.props.idobject}
+            	    onUpdate={this.loadFromServer}/>
+                <h3>Список файлов</h3>
+                <FilesList data={this.state.data}/>
+        	</div>
       );
     }
 });

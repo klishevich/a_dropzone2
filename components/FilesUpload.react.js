@@ -49,6 +49,7 @@ var FilesUpload = React.createClass({
             data: postdata,
             success: function(data) {
                 console.log('Success', data);
+                this.props.onUpdate();
                 if (data.error == true){
                     this.setState({Error: data.errorMessage});
                 }
@@ -85,7 +86,7 @@ var FilesUpload = React.createClass({
     },
     render: function() {
         return (
-            <div className="view-content-container filesUpload">
+            <div className="filesUpload">
                 <h3>Загрузка файлов</h3>
                 {this.renderError()}
                 <div className="row">

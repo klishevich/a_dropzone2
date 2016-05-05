@@ -48,10 +48,10 @@
 
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(158);
-	var FilesUpload = __webpack_require__(159);
+	var FilesListBox = __webpack_require__(159);
 	var idobjectname = '#' + document.getElementById('filesUpload').getAttribute("idobjectname");
 
-	ReactDOM.render(React.createElement(FilesUpload, {
+	ReactDOM.render(React.createElement(FilesListBox, {
 	    dropdownurl: document.getElementById('filesUpload').getAttribute("dropdownurl"),
 	    category: document.getElementById('filesUpload').getAttribute("category"),
 	    idname: document.getElementById('filesUpload').getAttribute("idname"),
@@ -7982,10 +7982,6 @@
 	  }
 	};
 
-	function registerNullComponentID() {
-	  ReactEmptyComponentRegistry.registerNullComponentID(this._rootNodeID);
-	}
-
 	var ReactEmptyComponent = function ReactEmptyComponent(instantiate) {
 	  this._currentElement = null;
 	  this._rootNodeID = null;
@@ -7994,7 +7990,7 @@
 	assign(ReactEmptyComponent.prototype, {
 	  construct: function construct(element) {},
 	  mountComponent: function mountComponent(rootID, transaction, context) {
-	    transaction.getReactMountReady().enqueue(registerNullComponentID, this);
+	    ReactEmptyComponentRegistry.registerNullComponentID(rootID);
 	    this._rootNodeID = rootID;
 	    return ReactReconciler.mountComponent(this._renderedComponent, rootID, transaction, context);
 	  },
@@ -18743,7 +18739,7 @@
 
 	'use strict';
 
-	module.exports = '0.14.8';
+	module.exports = '0.14.7';
 
 /***/ },
 /* 147 */
@@ -19722,246 +19718,59 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var CommonSelect = __webpack_require__(160);
-	var Dropzone = __webpack_require__(162);
+	var Dropzone = __webpack_require__(160);
+	var FilesUpload = __webpack_require__(162);
+	var FilesList = __webpack_require__(165);
 
-	var FilesUpload = React.createClass({
-	    displayName: 'FilesUpload',
+	var FilesListBox = React.createClass({
+	    displayName: 'FilesListBox',
 
 	    getInitialState: function getInitialState() {
-	        return { fileTypeSelect: [], IdValue: '', Comment: '', Error: null };
+	        return { data: [] };
 	    },
 	    componentWillMount: function componentWillMount() {
-	        this.loadSelectFileType('?category=' + this.props.category);
+	        this.loadFromServer();
 	    },
-	    loadSelectFileType: function loadSelectFileType(passedParams) {
+	    loadFromServer: function loadFromServer() {
 	        $.ajax({
-	            url: this.props.dropdownurl + passedParams,
+	            url: '/CourtCase/FilesList/' + this.props.idobject,
 	            dataType: 'json',
-	            success: function (currentDictSelect) {
+	            cache: false,
+	            success: function (data) {
 	                if (this.isMounted()) {
-	                    this.setState({ fileTypeSelect: currentDictSelect });
+	                    console.log('files data', data);
+	                    this.setState({ data: data });
 	                }
 	            }.bind(this),
 	            error: function (xhr, status, err) {
-	                console.error(this.props.dropdownurl + passedParams, status, err.toString());
+	                console.error("/", status, err.toString());
 	            }.bind(this)
 	        });
-	    },
-	    handleSelectChange: function handleSelectChange(item) {
-	        this.setState(item);
-	        console.log('this.state', this.state);
-	    },
-	    onDrop: function onDrop(files) {
-	        console.log('Received files: ', files);
-	        var postdata = new FormData();
-	        postdata.append('IdValue', this.state.IdValue);
-	        postdata.append('Comment', this.state.Comment);
-	        postdata.append('IdObject', this.props.idobject);
-	        files.forEach(function (file) {
-	            postdata.append(file.name, file);
-	            // file['IdFileType'] = IdFileType;
-	            // console.log(file);
-	        });
-	        this.handleUploadFile(postdata);
-	    },
-	    handleUploadFile: function handleUploadFile(postdata) {
-	        //  console.log('postdata', postdata.get('IdFileType'));
-	        $.ajax({
-	            url: '/File/Create',
-	            dataType: 'json',
-	            type: 'POST',
-	            data: postdata,
-	            success: function (data) {
-	                console.log('Success', data);
-	                if (data.error == true) {
-	                    this.setState({ Error: data.errorMessage });
-	                }
-	                // this.setState({data: data});
-	                // focusAndBlinkOnElement(item, '#'+Constants.ClassName, 'IdCourtCaseSession', false);
-	            }.bind(this),
-	            error: function (xhr, status, err) {
-	                console.log('xhr', xhr);
-	                console.log('status', status);
-	                console.log('Error', err);
-	                // console.error('/File/Create', status, err.toString());
-	            }.bind(this),
-	            processData: false,
-	            contentType: false
-	        });
-	    },
-	    handleChange: function handleChange(e) {
-	        this.setState({ Comment: e.target.value });
-	    },
-	    renderError: function renderError() {
-	        if (this.state.Error) {
-	            return React.createElement(
-	                'div',
-	                { className: 'row' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'col-xs-4 filesUpload-error' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'alert alert-danger', role: 'alert' },
-	                        this.state.Error
-	                    )
-	                )
-	            );
-	        }
-	        return null;
 	    },
 	    render: function render() {
 	        return React.createElement(
 	            'div',
-	            { className: 'view-content-container filesUpload' },
+	            { className: 'view-content-container FilesListBox' },
+	            React.createElement(FilesUpload, {
+	                dropdownurl: this.props.dropdownurl,
+	                category: this.props.category,
+	                idname: this.props.idname,
+	                idobject: this.props.idobject,
+	                onUpdate: this.loadFromServer }),
 	            React.createElement(
 	                'h3',
 	                null,
-	                'Загрузка файлов'
+	                'Список файлов'
 	            ),
-	            this.renderError(),
-	            React.createElement(
-	                'div',
-	                { className: 'row' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'col-xs-4 filesUpload-fileTypeSelect' },
-	                    React.createElement(
-	                        'label',
-	                        { htmlFor: 'IdFileType' },
-	                        'Тип файла'
-	                    ),
-	                    React.createElement(CommonSelect, { selectId: this.state.IdFileType,
-	                        onSelectChange: this.handleSelectChange,
-	                        idname: this.props.idname,
-	                        selectName: 'IdValue',
-	                        dictcommonselect: this.state.fileTypeSelect, alwaysUpdate: true })
-	                )
-	            ),
-	            React.createElement(
-	                'div',
-	                { className: 'row' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'col-xs-4 filesUpload-dropzone' },
-	                    React.createElement(
-	                        Dropzone,
-	                        { onDrop: this.onDrop },
-	                        React.createElement(
-	                            'div',
-	                            null,
-	                            'Перетащите файлы сюда.'
-	                        )
-	                    )
-	                )
-	            ),
-	            React.createElement(
-	                'div',
-	                { className: 'row' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'col-xs-4 filesUpload-comment' },
-	                    React.createElement(
-	                        'label',
-	                        { htmlFor: 'IdFileType' },
-	                        'Комментарий'
-	                    ),
-	                    React.createElement('textarea', { className: 'form-control input-sm', rows: '5', name: 'Comment', id: 'Comment',
-	                        style: { width: '100%' }, value: this.state.Comment, placeholder: 'Введите комментарий',
-	                        onChange: this.handleChange })
-	                )
-	            )
+	            React.createElement(FilesList, { data: this.state.data })
 	        );
 	    }
 	});
 
-	module.exports = FilesUpload;
+	module.exports = FilesListBox;
 
 /***/ },
 /* 160 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-	var React = __webpack_require__(1);
-	var CommonSelectItem = __webpack_require__(161);
-
-	var CommonSelect = React.createClass({
-	  displayName: 'CommonSelect',
-
-	  oldSelectId: '',
-	  getInitialState: function getInitialState() {
-	    return { selectId: this.props.selectId };
-	  },
-	  componentWillMount: function componentWillMount() {
-	    this.oldSelectId = this.props.selectId;
-	  },
-	  change: function change(e) {
-	    this.props.onSelectChange(_defineProperty({}, this.props.selectName, e.target.value));
-	  },
-	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
-	    //Если нужно всегда рэндерить компоненту, то передаем параметр alwaysUpdate={true}
-	    return nextProps.selectId !== this.oldSelectId || this.props.alwaysUpdate == true;
-	  },
-	  componentDidUpdate: function componentDidUpdate(nextProps) {
-	    this.oldSelectId = nextProps.selectId;
-	  },
-	  render: function render() {
-	    var _this = this,
-	        selectNodes = this.props.dictcommonselect.map(function (item) {
-	      // item.id, item.value - то, что возвращается в сигнатуре json
-	      return React.createElement(CommonSelectItem, {
-	        value: item[_this.props.idname],
-	        name: item.value,
-	        key: item.id });
-	    });
-	    return React.createElement(
-	      'div',
-	      { className: 'form-group', id: this.props.selectName },
-	      React.createElement(
-	        'select',
-	        { id: 'select_edit', className: 'form-control input-sm', onChange: this.change,
-	          value: this.props.selectId, selectCode: this.props.selectId },
-	        React.createElement(
-	          'option',
-	          null,
-	          'Не выбрано'
-	        ),
-	        selectNodes
-	      )
-	    );
-	  }
-	});
-
-	module.exports = CommonSelect;
-
-/***/ },
-/* 161 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-
-	var CommonSelectItem = React.createClass({
-	    displayName: 'CommonSelectItem',
-
-	    render: function render() {
-	        return React.createElement(
-	            'option',
-	            { value: this.props.value },
-	            this.props.name
-	        );
-	    }
-	});
-
-	module.exports = CommonSelectItem;
-
-/***/ },
-/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {'use strict';
@@ -20561,10 +20370,10 @@
 	});
 	;
 	//# sourceMappingURL=index.js.map
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(163)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(161)(module)))
 
 /***/ },
-/* 163 */
+/* 161 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -20579,6 +20388,439 @@
 		}
 		return module;
 	};
+
+/***/ },
+/* 162 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var CommonSelect = __webpack_require__(163);
+	var Dropzone = __webpack_require__(160);
+
+	var FilesUpload = React.createClass({
+	    displayName: 'FilesUpload',
+
+	    getInitialState: function getInitialState() {
+	        return { fileTypeSelect: [], IdValue: '', Comment: '', Error: null };
+	    },
+	    componentWillMount: function componentWillMount() {
+	        this.loadSelectFileType('?category=' + this.props.category);
+	    },
+	    loadSelectFileType: function loadSelectFileType(passedParams) {
+	        $.ajax({
+	            url: this.props.dropdownurl + passedParams,
+	            dataType: 'json',
+	            success: function (currentDictSelect) {
+	                if (this.isMounted()) {
+	                    this.setState({ fileTypeSelect: currentDictSelect });
+	                }
+	            }.bind(this),
+	            error: function (xhr, status, err) {
+	                console.error(this.props.dropdownurl + passedParams, status, err.toString());
+	            }.bind(this)
+	        });
+	    },
+	    handleSelectChange: function handleSelectChange(item) {
+	        this.setState(item);
+	        console.log('this.state', this.state);
+	    },
+	    onDrop: function onDrop(files) {
+	        console.log('Received files: ', files);
+	        var postdata = new FormData();
+	        postdata.append('IdValue', this.state.IdValue);
+	        postdata.append('Comment', this.state.Comment);
+	        postdata.append('IdObject', this.props.idobject);
+	        files.forEach(function (file) {
+	            postdata.append(file.name, file);
+	            // file['IdFileType'] = IdFileType;
+	            // console.log(file);
+	        });
+	        this.handleUploadFile(postdata);
+	    },
+	    handleUploadFile: function handleUploadFile(postdata) {
+	        //  console.log('postdata', postdata.get('IdFileType'));
+	        $.ajax({
+	            url: '/File/Create',
+	            dataType: 'json',
+	            type: 'POST',
+	            data: postdata,
+	            success: function (data) {
+	                console.log('Success', data);
+	                this.props.onUpdate();
+	                if (data.error == true) {
+	                    this.setState({ Error: data.errorMessage });
+	                } else {
+	                    this.props.onUpdate();
+	                }
+	                // this.setState({data: data});
+	                // focusAndBlinkOnElement(item, '#'+Constants.ClassName, 'IdCourtCaseSession', false);
+	            }.bind(this),
+	            error: function (xhr, status, err) {
+	                console.log('xhr', xhr);
+	                console.log('status', status);
+	                console.log('Error', err);
+	                // console.error('/File/Create', status, err.toString());
+	            }.bind(this),
+	            processData: false,
+	            contentType: false
+	        });
+	    },
+	    handleChange: function handleChange(e) {
+	        this.setState({ Comment: e.target.value });
+	    },
+	    renderError: function renderError() {
+	        if (this.state.Error) {
+	            return React.createElement(
+	                'div',
+	                { className: 'row' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'col-xs-4 filesUpload-error' },
+	                    React.createElement(
+	                        'div',
+	                        { className: 'alert alert-danger', role: 'alert' },
+	                        this.state.Error
+	                    )
+	                )
+	            );
+	        }
+	        return null;
+	    },
+	    render: function render() {
+	        return React.createElement(
+	            'div',
+	            { className: 'filesUpload' },
+	            React.createElement(
+	                'h3',
+	                null,
+	                'Загрузка файлов'
+	            ),
+	            this.renderError(),
+	            React.createElement(
+	                'div',
+	                { className: 'row' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'col-xs-4 filesUpload-fileTypeSelect' },
+	                    React.createElement(
+	                        'label',
+	                        { htmlFor: 'IdFileType' },
+	                        'Тип файла'
+	                    ),
+	                    React.createElement(CommonSelect, { selectId: this.state.IdFileType,
+	                        onSelectChange: this.handleSelectChange,
+	                        idname: this.props.idname,
+	                        selectName: 'IdValue',
+	                        dictcommonselect: this.state.fileTypeSelect, alwaysUpdate: true })
+	                )
+	            ),
+	            React.createElement(
+	                'div',
+	                { className: 'row' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'col-xs-4 filesUpload-dropzone' },
+	                    React.createElement(
+	                        Dropzone,
+	                        { onDrop: this.onDrop },
+	                        React.createElement(
+	                            'div',
+	                            null,
+	                            'Перетащите файлы сюда.'
+	                        )
+	                    )
+	                )
+	            ),
+	            React.createElement(
+	                'div',
+	                { className: 'row' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'col-xs-4 filesUpload-comment' },
+	                    React.createElement(
+	                        'label',
+	                        { htmlFor: 'IdFileType' },
+	                        'Комментарий'
+	                    ),
+	                    React.createElement('textarea', { className: 'form-control input-sm', rows: '5', name: 'Comment', id: 'Comment',
+	                        style: { width: '100%' }, value: this.state.Comment, placeholder: 'Введите комментарий',
+	                        onChange: this.handleChange })
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = FilesUpload;
+
+/***/ },
+/* 163 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	var React = __webpack_require__(1);
+	var CommonSelectItem = __webpack_require__(164);
+
+	var CommonSelect = React.createClass({
+	  displayName: 'CommonSelect',
+
+	  oldSelectId: '',
+	  getInitialState: function getInitialState() {
+	    return { selectId: this.props.selectId };
+	  },
+	  componentWillMount: function componentWillMount() {
+	    this.oldSelectId = this.props.selectId;
+	  },
+	  change: function change(e) {
+	    this.props.onSelectChange(_defineProperty({}, this.props.selectName, e.target.value));
+	  },
+	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
+	    //Если нужно всегда рэндерить компоненту, то передаем параметр alwaysUpdate={true}
+	    return nextProps.selectId !== this.oldSelectId || this.props.alwaysUpdate == true;
+	  },
+	  componentDidUpdate: function componentDidUpdate(nextProps) {
+	    this.oldSelectId = nextProps.selectId;
+	  },
+	  render: function render() {
+	    var _this = this,
+	        selectNodes = this.props.dictcommonselect.map(function (item) {
+	      // item.id, item.value - то, что возвращается в сигнатуре json
+	      return React.createElement(CommonSelectItem, {
+	        value: item[_this.props.idname],
+	        name: item.value,
+	        key: item.id });
+	    });
+	    return React.createElement(
+	      'div',
+	      { className: 'form-group', id: this.props.selectName },
+	      React.createElement(
+	        'select',
+	        { id: 'select_edit', className: 'form-control input-sm', onChange: this.change,
+	          value: this.props.selectId, selectCode: this.props.selectId },
+	        React.createElement(
+	          'option',
+	          null,
+	          'Не выбрано'
+	        ),
+	        selectNodes
+	      )
+	    );
+	  }
+	});
+
+	module.exports = CommonSelect;
+
+/***/ },
+/* 164 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var CommonSelectItem = React.createClass({
+	    displayName: 'CommonSelectItem',
+
+	    render: function render() {
+	        return React.createElement(
+	            'option',
+	            { value: this.props.value },
+	            this.props.name
+	        );
+	    }
+	});
+
+	module.exports = CommonSelectItem;
+
+/***/ },
+/* 165 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var File = __webpack_require__(166);
+
+	var FilesList = React.createClass({
+	  displayName: 'FilesList',
+
+	  tableHeaderTitle: function tableHeaderTitle(columnName) {
+	    return React.createElement(
+	      'div',
+	      null,
+	      columnName
+	    );
+	  },
+	  // направление сортировки
+	  render: function render() {
+	    var sorted_data = this.props.data;
+
+	    //edit
+	    var _this = this,
+	        listNodes = this.props.data.map(function (item) {
+	      if (item.IdCourtCaseSide != -1) {
+	        return React.createElement(File, {
+	          key: item.IdFile,
+	          IdFile: item.IdFile,
+	          IdObject: item.IdObject,
+	          IdItemType: item.IdItemType,
+	          FileName: item.FileName,
+	          Extension: item.Extension,
+	          UploadDate: item.UploadDate,
+	          ContentSizeInBytes: item.ContentSizeInBytes,
+	          ContentSize: item.ContentSize,
+	          ArchiveUrl: item.ArchiveUrl,
+	          IdUser: item.IdUser,
+	          Deleted: item.Deleted,
+	          Comment: item.Comment,
+	          DocumentType: item.DocumentType });
+	      }
+	    });
+
+	    var listName = "FilesList List table table-striped table-bordered horizontalScroll";
+
+	    //edit
+	    //Заголовки колонок таблицы
+	    return React.createElement(
+	      'table',
+	      { className: listName },
+	      React.createElement(
+	        'thead',
+	        { className: 'tableHeader' },
+	        React.createElement(
+	          'tr',
+	          null,
+	          React.createElement(
+	            'th',
+	            { className: 'th-default' },
+	            this.tableHeaderTitle("Тип файла")
+	          ),
+	          React.createElement(
+	            'th',
+	            { className: 'th-default' },
+	            this.tableHeaderTitle("Имя файла")
+	          ),
+	          React.createElement(
+	            'th',
+	            { className: 'th-default' },
+	            this.tableHeaderTitle("Размер")
+	          ),
+	          React.createElement(
+	            'th',
+	            { className: 'th-default' },
+	            this.tableHeaderTitle("Создатель")
+	          ),
+	          React.createElement(
+	            'th',
+	            { className: 'th-default' },
+	            this.tableHeaderTitle("Дата созания")
+	          ),
+	          React.createElement(
+	            'th',
+	            { className: 'th-default' },
+	            this.tableHeaderTitle("Комментарий")
+	          ),
+	          React.createElement(
+	            'th',
+	            { className: 'th-default' },
+	            this.tableHeaderTitle("Действия")
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        'tbody',
+	        null,
+	        listNodes
+	      )
+	    );
+	  }
+	});
+
+	module.exports = FilesList;
+
+/***/ },
+/* 166 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+
+	var Constants = {
+	    IdName: "IdFile",
+	    ClassName: "File"
+	};
+
+	var File = React.createClass({
+	    displayName: "File",
+
+	    cellViewBase: function cellViewBase(parameter, isDate, isDatetime) {
+	        var currentClassName = Constants.ClassName + parameter;
+	        var currentValue = this.props[parameter];
+	        if (isDate) {
+	            if (isDatetime) {
+	                return React.createElement(
+	                    "td",
+	                    { className: currentClassName },
+	                    dateTimePickerShow(currentValue)
+	                );
+	            } else {
+	                return React.createElement(
+	                    "td",
+	                    { className: currentClassName },
+	                    datePickerShow(currentValue)
+	                );
+	            }
+	        } else {
+	            return React.createElement(
+	                "td",
+	                { className: currentClassName },
+	                currentValue
+	            );
+	        }
+	    },
+	    cellViewDate: function cellViewDate(par) {
+	        return this.cellViewBase(par, true, false);
+	    },
+	    cellViewDateTime: function cellViewDateTime(par) {
+	        return this.cellViewBase(par, true, true);
+	    },
+	    cellViewText: function cellViewText(par) {
+	        return this.cellViewBase(par, false, false);
+	    },
+	    //Строка в гриде
+	    rowViewBase: function rowViewBase(rowClassName) {
+	        var idName = Constants.ClassName + this.props[Constants.IdName];
+	        return React.createElement(
+	            "tr",
+	            { className: rowClassName, id: idName },
+	            this.cellViewText("IdItemType"),
+	            this.cellViewText("FileName"),
+	            this.cellViewText("ContentSize"),
+	            this.cellViewText("IdUser"),
+	            this.cellViewText("UploadDate"),
+	            this.cellViewText("Comment"),
+	            React.createElement(
+	                "td",
+	                null,
+	                "тут будут кнопки"
+	            )
+	        );
+	    },
+	    rowView: function rowView() {
+	        return this.rowViewBase(Constants.ClassName);
+	    },
+	    render: function render() {
+	        return this.rowView();
+	    }
+	});
+
+	module.exports = File;
 
 /***/ }
 /******/ ]);
